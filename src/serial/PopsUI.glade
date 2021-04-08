@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
+<!-- Generated with glade 3.36.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkAdjustment" id="LagAd1">
     <property name="lower">-5</property>
     <property name="upper">5</property>
-    <property name="step_increment">0.10000000000000001</property>
+    <property name="step_increment">0.1</property>
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="LagAd2">
     <property name="lower">-5</property>
     <property name="upper">5</property>
-    <property name="step_increment">0.10000000000000001</property>
+    <property name="step_increment">0.1</property>
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="LagAd3">
     <property name="lower">-5</property>
     <property name="upper">5</property>
-    <property name="step_increment">0.10000000000000001</property>
+    <property name="step_increment">0.1</property>
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="LagAd4">
     <property name="lower">-5</property>
     <property name="upper">5</property>
-    <property name="step_increment">0.10000000000000001</property>
+    <property name="step_increment">0.1</property>
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="LagAd5">
     <property name="lower">-5</property>
     <property name="upper">5</property>
-    <property name="step_increment">0.10000000000000001</property>
+    <property name="step_increment">0.1</property>
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="hkMax">
     <property name="upper">5</property>
     <property name="value">5</property>
-    <property name="step_increment">0.10000000000000001</property>
-    <property name="page_increment">0.10000000000000001</property>
+    <property name="step_increment">0.1</property>
+    <property name="page_increment">0.1</property>
   </object>
   <object class="GtkAdjustment" id="hkMin">
     <property name="upper">5</property>
@@ -59,52 +59,6 @@
     <property name="default_width">-1</property>
     <property name="default_height">-1</property>
     <property name="gravity">center</property>
-    <child type="titlebar">
-      <object class="GtkHeaderBar" id="header">
-        <property name="width_request">1270</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="has_subtitle">False</property>
-        <property name="spacing">7</property>
-        <property name="show_close_button">True</property>
-        <child>
-          <object class="GtkStackSwitcher" id="SwitchMe">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-      </object>
-    </child>
     <child>
       <object class="GtkFixed" id="POPS UI">
         <property name="visible">True</property>
@@ -196,17 +150,6 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="Time">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="editable">False</property>
-          </object>
-          <packing>
-            <property name="x">1070</property>
-            <property name="y">50</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkEntry" id="POPSSerial">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -214,17 +157,6 @@
           </object>
           <packing>
             <property name="x">1070</property>
-            <property name="y">95</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Time</property>
-          </object>
-          <packing>
-            <property name="x">960</property>
             <property name="y">55</property>
           </packing>
         </child>
@@ -236,7 +168,7 @@
           </object>
           <packing>
             <property name="x">960</property>
-            <property name="y">99</property>
+            <property name="y">59</property>
           </packing>
         </child>
         <child>
@@ -253,6 +185,71 @@
             <property name="x">1080</property>
             <property name="y">20</property>
           </packing>
+        </child>
+      </object>
+    </child>
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="header">
+        <property name="width_request">1270</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="title" translatable="yes">NC State POPS</property>
+        <property name="subtitle" translatable="yes">Data Acquisition and Control System</property>
+        <property name="has_subtitle">False</property>
+        <property name="spacing">7</property>
+        <child>
+          <object class="GtkStackSwitcher" id="SwitchMe">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="stopButton">
+            <property name="label" translatable="yes">Stop DAQ</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="Time">
+            <property name="width_request">200</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="editable">False</property>
+            <property name="primary_icon_stock">gtk-info</property>
+          </object>
+          <packing>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>
