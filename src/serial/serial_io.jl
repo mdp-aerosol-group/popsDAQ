@@ -35,7 +35,7 @@ function read_POPS(port,filePOPS)
 	d = split(c,'\0')
 	e = d[map(length, d) .> 0]
 	if (length(e) == 0)
-		return 0, [0 for i = 1:16]
+		return 0, 0, [0 for i = 1:16]
 	end
 	f = split(e[1], '\n')
 	str = f[map(length, f) .> 0]
@@ -87,7 +87,7 @@ function read_POPS(port,filePOPS)
 			catch
 				[0 for i = 1:16]
 			end
-			Nt, Np./Q
+			Nt, Q, Np./Q
 		end
 	end
 	out = try
@@ -96,7 +96,7 @@ function read_POPS(port,filePOPS)
 		nothing
 	end
 	if out === nothing
-		return 0, [0 for i = 1:16]
+		return 0, 0, [0 for i = 1:16]
 	else
 		return out[end]
 	end
@@ -105,6 +105,6 @@ end
 function serial_read(portPOPS, filePOPS)
     t = now()
     N0 = [10,15.0,30,20,10,1.0, 0.1, 0.04, 0.005]
-	Nt, dN = read_POPS(portPOPS, filePOPS)
-	push!(RS232dataStream, DataFrame(t=t,tint=Dates.value(t),POPS=Nt,POPSDistribution=[dN]))
+	Nt, Q, dN = read_POPS(portPOPS, filePOPS)
+	push!(RS232dataStream, DataFrame(t=t,tint=Dates.value(t),POPS=Nt,Q=Q,POPSDistribution=[dN]))
 end

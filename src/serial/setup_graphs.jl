@@ -4,7 +4,7 @@ using Colors
 
 function time_series(yaxis)
 	plot = InspectDR.transientplot(yaxis, title="")
-	InspectDR.overwritefont!(plot.layout, fontname="Helvetica", fontscale=1.0)
+	InspectDR.overwritefont!(plot.layout, fontscale=1.0)
 	plot.layout[:enable_legend] = false
 	plot.layout[:halloc_legend] = 130
 	plot.layout[:halloc_left] = 50
@@ -29,7 +29,7 @@ end
 
 function size_distribution()
 	plotPOPSSize = InspectDR.Plot2D(:log,:log, title="")
-	InspectDR.overwritefont!(plotPOPSSize.layout, fontname="Helvetica", fontscale=1.0)
+	InspectDR.overwritefont!(plotPOPSSize.layout, fontscale=1.0)
 	plotPOPSSize.layout[:enable_legend] = false
 	plotPOPSSize.layout[:enable_timestamp] = false
 	plotPOPSSize.layout[:length_tickmajor] = 10

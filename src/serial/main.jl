@@ -24,7 +24,7 @@ using .DataAcquisitionLoops
 # Start DAQ Loops
 Acquire = @spawnat 2 DataAcquisitionLoops.aquire(-1)
 
-(@isdefined wnd) && destroy(wnd)                   # Destroy wind   ow if exists
+(@isdefined wnd) && destroy(wnd)                   # Destroy wind   ow if existi 2s
 gui = GtkBuilder(filename=pwd()*"/PopsUI.glade")  # Load the GUI template
 wnd = gui["mainWindow"]                            # Set the main windowx
 

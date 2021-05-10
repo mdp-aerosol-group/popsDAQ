@@ -6,6 +6,11 @@ function update_oneHz()
     else
         set_gtk_property!(gui["POPSSerial"], :text, @sprintf("missing"))
     end
+    if isless((frame.Q)[1], missing)
+        set_gtk_property!(gui["POPSFlow"], :text, @sprintf("%.2f", (frame.Q)[1]))
+    else
+        set_gtk_property!(gui["POPSFlow"], :text, @sprintf("missing"))
+    end
 
     dstr = @fetchfrom 2 DataAcquisitionLoops.datestr
     HM = @fetchfrom 2 DataAcquisitionLoops.HHMM
@@ -21,7 +26,7 @@ function update_graphs()
     x = Dates.value.(t).-Δt
     y = convert(Array{Float64},Nt)
     ii = isless.(y,NaN)
-    itp = interpolate((x[ii],),y[ii],Gridded(Linear()))
+	itp = interpolate((x[ii],),y[ii],Gridded(Linear()))
     push!(extpPOPS,extrapolate(itp,0))
 
     x = (x .- x[1])./1000.0/60.0
