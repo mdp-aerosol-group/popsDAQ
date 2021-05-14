@@ -1,79 +1,57 @@
+using Distributed
+
+addprocs(2; exeflags="--project")
+
 using Gtk
 using InspectDR
-using NumericIO
 using Reactive
 using Colors
-using DataFrames    
-using Printf
-using Dates
-using CSV
-using DelimitedFiles
-using FileIO    
+using DataFrames
 using DataStructures
+using Dates
+using Distributions
+using DelimitedFiles
+using Interpolations
 using Statistics
-using MCA8000D
+using Printf
+using CSV
+using LibSerialPort
+using NumericIO
 
+include("DataAcquisitionLoops.jl")
+include("MCA.jl")
+using .DataAcquisitionLoops, .MCA
+Godot1 = @spawnat 2 DataAcquisitionLoops.acquire(-1)
+Godot2 = @spawnat 3 MCA.acquire_mca()
 
-(@isdefined wnd) && destroy(wnd)
-gui = GtkBuilder(filename=pwd()*"/mca.glade")  
-wnd = gui["mainWindow"]
-sNoise = gui["accumulationTime1"]
-gainMode = gui["Gain"]
-aTime = gui["accumulationTime"]
+(@isdefined wnd) && destroy(wnd)                   # Destroy wind   ow if existi 2s
+gui = GtkBuilder(filename=pwd()*"/PopsUI.glade")  # Load the GUI template
+wnd = gui["mainWindow"]                            # Set the main windowx
 
-include("global_variables.jl")        # Reactive Signals and global variables
-include("gtk_graphs.jl")              # push graphs to the UI#
-include("setup_graphs.jl")            # Initialize graphs 
-include("mca.jl")                     # MCA DAQ
-
-Gtk.showall(wnd)                      
-
-oneHz = every(1.0)            # 1  Hz time
-
-function update_gui()
-    t = now()
-
-    n = get_gtk_property(aTime, "value", Int)
-    subsetSpectra = hcat(spectra.value[end-n:end]...)   
-    y = mean(subsetSpectra, dims=2)
-    meanC = sum(y)
-
-    thegain = get_gtk_property(gainMode, "active-id", String) 
-    V = (thegain == "1") ? Vlow : Vhi
-
-    qstr = get_gtk_property(gui["flow"], :text, String) 
-    nx = parse(Float64, qstr)*lpm*1e6
-
-    meanV = sum(V.*y)./sum(y)
-    set_gtk_property!(gui["Timer"], :text, Dates.format(t,"HH:MM:SS"))
-    set_gtk_property!(gui["meanC"], :text, @sprintf("%i", meanC))
-    set_gtk_property!(gui["meanV"], :text, @sprintf("%i", meanV))
-    set_gtk_property!(gui["concentration"], :text, @sprintf("%i", meanC/nx))
-
-    rx = map(i->mean(V[i:i+4]),1:8:length(y)-8)
-    ry = map(i->mean(y[i:i+4]),1:8:length(y)-8)
-
-    plotInt.xext = InspectDR.PExtents1D() 
-    if (thegain == "1") 
-        plotInt.xext_full = InspectDR.PExtents1D(0, 1)
-    else
-        plotInt.xext_full = InspectDR.PExtents1D(0, 10)
-    end
-
-    addseries!(rx[2:end]./1000.0, ry[2:end], plotInt, gplotInt, 1, false, true)
-
-    plotInt1.xext = InspectDR.PExtents1D() 
-    if (thegain == "1") 
-        plotInt1.xext_full = InspectDR.PExtents1D(0.01, 1)
-    else
-        plotInt1.xext_full = InspectDR.PExtents1D(0.01, 10)
-    end
-
-    addseries!(rx[2:end]./1000.0, ry[2:end], plotInt1, gplotInt1, 1, false, true)
+gSelect1= gui["xpxp1G1"]
+signal_connect(gSelect1, "changed") do widget, others...
+	update_graphs()
 end
 
-acquire_mca()
-update_gui()
-sleep(3)
-MAC = map(_->acquire_mca(), oneHz)
-myGUI = map(_->update_gui(), oneHz)
+gSelect3= gui["xpxp2G1"]
+signal_connect(gSelect3, "changed") do widget, others...
+	update_graphs()
+end
+
+include("gtk_graphs.jl")              # Generic GTK graphing routines
+include("constants.jl")               # Signals and global constants
+include("setup_graphs.jl")            # Initialize graphs for GUI
+include("gui_updates.jl")             # Update loops for GUI IO
+#include("mca.jl")                     # Initialize MCA card
+
+Gtk.showall(wnd)                      # Show the window
+
+oneHz = every(1.0)                    # 1  Hz timer
+
+oneHzFields = map(_->(@async update_oneHz()), oneHz)
+Godot = @task _->false
+id = signal_connect(x->schedule(Godot), gui["stopButton"], "clicked")
+Godot = @task _->false
+
+
+wait(Godot)

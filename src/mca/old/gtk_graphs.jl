@@ -36,7 +36,7 @@ function addpoint!(x::Float64,y::Float64,plot::InspectDR.Plot2D,
 			push!(miny, minimum(x.ds.y))
 			push!(maxy, maximum(x.ds.y))
 		end
-		miny =  0.01
+		miny =  minimum(miny)
 		maxy =  maximum(maxy)
 		graph = plot.strips[1]
 		graph.yext = InspectDR.PExtents1D() 
@@ -44,6 +44,22 @@ function addpoint!(x::Float64,y::Float64,plot::InspectDR.Plot2D,
 	end
 
 	refreshplot(gplot)
+end
+
+# -- adds the plot to a Gtk box located in a window
+function push_plot_to_gui!(plot::InspectDR.Plot2D, 
+						   box::GtkBoxLeaf, 
+						   wnd::GtkWindowLeaf)
+
+	mp = InspectDR.Multiplot()
+	InspectDR._add(mp, plot)
+	grd = Gtk.Grid()
+	Gtk.set_gtk_property!(grd, :column_homogeneous, true)
+	status = _Gtk.Label("")
+	push!(box, grd)
+	gplot = InspectDR.GtkPlot(false, wnd, grd, [], mp, status)
+	InspectDR.sync_subplots(gplot)
+	return mp,gplot
 end
 
 function addseries!(x::Array{Float64},y::Array{Float64},plot::InspectDR.Plot2D,
@@ -57,7 +73,7 @@ function addseries!(x::Array{Float64},y::Array{Float64},plot::InspectDR.Plot2D,
 			push!(miny, minimum(x.ds.y))
 			push!(maxy, maximum(x.ds.y))
 		end
-		miny =  0.01
+		miny =  minimum(miny)
 		maxy =  maximum(maxy)
 		graph = plot.strips[1]
 		graph.yext = InspectDR.PExtents1D() 
@@ -78,34 +94,19 @@ function addseries!(x::Array{Float64},y::Array{Float64},plot::InspectDR.Plot2D,
 
 	refreshplot(gplot)
 end
-# -- adds the plot to a Gtk box located in a window
-function push_plot_to_gui!(plot::InspectDR.Plot2D, 
-						   box::GtkBoxLeaf, 
-						   wnd::GtkWindowLeaf)
-
-	mp = InspectDR.Multiplot()
-	InspectDR._add(mp, plot)
-	grd = Gtk.Grid()
-	Gtk.set_gtk_property!(grd, :column_homogeneous, true)
-	status = _Gtk.Label("")
-	push!(box, grd)
-	gplot = InspectDR.GtkPlot(false, wnd, grd, [], mp, status)
-	InspectDR.sync_subplots(gplot)
-	return mp,gplot
-end
 
 # -- setup of the frame for a particular GUI plot
 # Traced from InspectDR source code without title refresh
 function refreshplot(gplot::InspectDR.GtkPlot)
 	if !gplot.destroyed
-		set_gtk_property!(gplot.grd, :visible, false) 
-		InspectDR.sync_subplots(gplot)
+        set_gtk_property!(gplot.grd, :visible, false) 
+        InspectDR.sync_subplots(gplot)
 		for sub in gplot.subplots
 			InspectDR.render(sub, refreshdata=true)  
-			Gtk.draw(sub.canvas)
+		    Gtk.draw(sub.canvas)
 		end
-		set_gtk_property!(gplot.grd, :visible, true)
-		Gtk.showall(gplot.grd)
-		sleep(eps(0.0))
+        set_gtk_property!(gplot.grd, :visible, true)
+        Gtk.showall(gplot.grd)
+        sleep(eps(0.0))
 	end
 end

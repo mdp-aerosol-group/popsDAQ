@@ -42,6 +42,7 @@ set_gain(write=false)
 set_noise(write=true)
 sleep(1)
 mca8000d.enable_MCA_MCS()            
+
 function acquire_mca()
     s = mca8000d.spectrum(true,true)  
     push!(spectra.value, s[1])
