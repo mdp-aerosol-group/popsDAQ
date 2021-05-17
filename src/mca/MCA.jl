@@ -11,7 +11,7 @@ using CSV
 const path = mapreduce(a -> "/" * a, *, (pwd()|>x->split(x, "/"))[2:3]) * "/Data/MCA/"
 const datestr = Signal(Dates.format(now(), "yyyymmdd"))
 const HH = Signal(Dates.format(now(), "HH"))
-const spectra = Signal(CircularBuffer{Array{Float64,1}}(10))
+const spectra = Signal(CircularBuffer{Array{Float64,1}}(100))
 const MCAdataFilename =
     Signal(path * "MCAdataStream_" * datestr.value * "_" * HH.value * "00.txt")
 map(_ -> push!(spectra.value, zeros(8191)), 1:100)

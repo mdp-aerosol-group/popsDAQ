@@ -43,7 +43,7 @@ function update_oneHz()
     my_spectra = @fetchfrom 3 MCA.spectra
     subsetSpectra = hcat(my_spectra.value[end-n+1:end]...)    
     y = mean(subsetSpectra, dims=2)
-    meanC = sum(subsetSpectra)/nx
+    meanC = sum(y)
 
     thegain = get_gtk_property(gainMode, "active-id", String) 
     V = (thegain == "1") ? Vlow : Vhi
@@ -56,7 +56,7 @@ function update_oneHz()
 	set_gtk_property!(gui["meanC"], :text, @sprintf("%.1f", meanC*10/nx))
 
     rx = map(i->mean(V[i:i+4]),1:8:length(y)-8)
-    ry = map(i->mean(y[i:i+4]),1:8:length(y)-8)
+    ry = map(i->mean(10.0.*y[i:i+4]),1:8:length(y)-8)
     ry[ry .< 0.01] .= 0.01
     plotInt.xext = InspectDR.PExtents1D() 
     if (thegain == "1") 
@@ -66,4 +66,13 @@ function update_oneHz()
     end
 
     addseries!(rx[2:end]./1000.0, ry[2:end], plotInt, gplotInt, 1, false, true)
+
+    dp = OmronD6FPH.dp(handle, "0025AD1"; SDAP = 2, SCLP = 3)
+	flow_rate = dp/2.5/100.0 * 16.6666666666
+
+    (a,b) = poll_EL1050()
+  
+    set_gtk_property!(gui["temperature"], :text, @sprintf("%.1f", a)) 
+    set_gtk_property!(gui["RH"], :text, @sprintf("%.1f", b)) 
+    set_gtk_property!(gui["flow"], :text, @sprintf("%.2f", flow_rate)) 
 end

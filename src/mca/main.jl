@@ -42,7 +42,7 @@ include("gtk_graphs.jl")              # Generic GTK graphing routines
 include("constants.jl")               # Signals and global constants
 include("setup_graphs.jl")            # Initialize graphs for GUI
 include("gui_updates.jl")             # Update loops for GUI IO
-#include("mca.jl")                     # Initialize MCA card
+include("labjack_io.jl")
 
 Gtk.showall(wnd)                      # Show the window
 
