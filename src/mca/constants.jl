@@ -28,10 +28,11 @@ const gainMode = gui["gainMode"]
 const aTime = gui["accumulationTime"]
 
 const outfile = let a= pwd() |> x->split(x,"/")
-	datestr = Dates.format(now(), "yyyymmdd")
-	path = mapreduce(a->"/"*a,*,a[2:3])*"/Data/MCA/"*datestr*"/"
-	read(`mkdir -p $path`)
-	Signal(path*"MCA"*datestr*".mca")
+	Signal(path*"LJdataStream_"*datestr.value*".csv")
+end
+
+const thisNewDay = map(droprepeats(datestr)) do x  
+    push!(outfile, path*"LJdataStream_"*datestr.value*".csv")
 end
 
 const ch = 1:8191 |> collect

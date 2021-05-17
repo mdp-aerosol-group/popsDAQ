@@ -20,10 +20,9 @@ function acquire_mca()
     mca8000d = device()                    # Open the device
     mca8000d.disable_MCA_MCS()
     status = mca8000d.reqStatus()          # Read the configuration
-    println("Here")
     printStatus(status)
 
-    mca8000d.sendCmdConfig("THSL=0.05;")
+    mca8000d.sendCmdConfig("THSL=0.35;")
     mca8000d.sendCmdConfig("GAIA=1;")
     mca8000d.sendCmdConfig("PRER=OFF;")
     mca8000d.enable_MCA_MCS()
