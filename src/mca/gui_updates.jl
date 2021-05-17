@@ -40,9 +40,12 @@ function update_oneHz()
     addseries!(DpPOPS[jj],POPSDistribution1[jj], plotXPXP2, gplotPlotXPXP2, 1, false, false)
 
     n = get_gtk_property(aTime, "value", Int)
+    thresh = get_gtk_property(sNoise, "value", Float64)
     my_spectra = @fetchfrom 3 MCA.spectra
     subsetSpectra = hcat(my_spectra.value[end-n+1:end]...)    
+    ii = thresh/100*8192 |> floor |> Int
     y = mean(subsetSpectra, dims=2)
+    y[1:ii] .= 0
     meanC = sum(y)
 
     thegain = get_gtk_property(gainMode, "active-id", String) 
