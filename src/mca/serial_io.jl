@@ -83,7 +83,7 @@ function read_POPS(port,filePOPS)
 				1.0
 			end
 			Nt = try
-				sum(Np./Q)
+				sum(Np[4:end]./Q)
 			catch
 				[0 for i = 1:16]
 			end
